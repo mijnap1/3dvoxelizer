@@ -232,6 +232,18 @@ const App: React.FC = () => {
       {!design && (
         <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[120px] -z-20 ${theme === 'dark' ? 'bg-indigo-500/5' : 'bg-indigo-200/20'}`}></div>
       )}
+
+      <footer className={`px-6 pb-10 text-center text-xs mono ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+        Designed with ♥ by{' '}
+        <a
+          href="https://jamieryus.com"
+          target="_blank"
+          rel="noreferrer"
+          className={`underline underline-offset-4 transition-colors ${theme === 'dark' ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-500'}`}
+        >
+          Jamie Ryu
+        </a>
+      </footer>
     </div>
   );
 };
