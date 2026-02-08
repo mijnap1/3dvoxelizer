@@ -1,36 +1,84 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
 # Voxelizer.AI
 
-Public voxelizer website with a protected Gemini key.
+Turn any image into an interactive 3D voxel diorama and export it as a `.glb` model.
+
+## What It Does
+
+- Upload a photo and generate a voxel design with AI.
+- View and rotate the generated model in a Three.js scene.
+- Inspect palette and block stats.
+- Export the voxel result as `.glb`.
+
+## Tech Stack
+
+- Frontend: React + TypeScript + Vite
+- 3D Rendering: Three.js
+- AI: Gemini (`@google/genai`)
+- API Runtime: Vercel Serverless Function (`/api/voxelize`)
+
+## Project Structure
+
+- `/App.tsx` UI and app flow
+- `/VoxelScene.tsx` Three.js scene rendering + GLB export
+- `/geminiService.ts` frontend client call to API route
+- `/api/voxelize.ts` server-side Gemini call (API key stays here)
+- `/types.ts` shared response/data types
 
 ## Security Model
 
-- Browser never calls Gemini directly.
-- Browser calls `/api/voxelize`.
-- `GEMINI_API_KEY` is only read on the server function (`api/voxelize.ts`).
+- The browser never calls Gemini directly.
+- The browser only calls `/api/voxelize`.
+- `GEMINI_API_KEY` is read only on the server in `/api/voxelize.ts`.
+- Do not put API keys in client code, Vite `define`, or public env variables.
 
 ## Local Development
 
-Prerequisites: Node.js.
+Prerequisites:
+- Node.js 18+
 
+Setup:
 1. Install dependencies:
    `npm install`
-2. Create `.env.local` from `.env.example` and set your key:
-   `GEMINI_API_KEY=your_key_here`
-3. Run secure local dev (frontend + API):
+2. Create `.env.local` from `.env.example`:
+   `GEMINI_API_KEY=your_gemini_api_key_here`
+3. Run secure local dev (frontend + serverless API):
    `npm run dev:secure`
 
-Note: `npm run dev` runs Vite only and does not include the serverless API route.
+Notes:
+- `npm run dev` starts Vite only (no `/api/voxelize` route).
+- `npm run dev:secure` uses `vercel dev` so API routes work locally.
 
-## Deploy Publicly (Vercel + GitHub)
+## Deployment (GitHub + Vercel)
 
-1. Push this project to GitHub.
-2. Import the repo in Vercel.
-3. Set environment variable in Vercel project settings:
-   `GEMINI_API_KEY=your_key_here`
+1. Push this repo to GitHub.
+2. Import the repo into Vercel.
+3. Add environment variable in Vercel project settings:
+   `GEMINI_API_KEY=your_gemini_api_key_here`
 4. Deploy.
 
-After deploy, users can use the site publicly, but your API key is not exposed in frontend code or network requests.
+## Environment Variables
+
+- `GEMINI_API_KEY` required on the server.
+
+## NPM Scripts
+
+- `npm run dev` start Vite dev server
+- `npm run dev:secure` run Vite + Vercel API routes locally
+- `npm run build` build production frontend bundle
+- `npm run preview` preview production frontend build
+
+## Troubleshooting
+
+- `Voxel matrix failure`:
+  Check Vercel logs or local terminal output for `/api/voxelize` errors.
+- `Server is missing GEMINI_API_KEY`:
+  Add the key in local `.env.local` and Vercel environment settings.
+- API works locally but not in production:
+  Confirm the key is set in the correct Vercel environment (Production/Preview).
+
+## License
+
+Private project unless you choose to add an open-source license.
