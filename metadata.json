@@ -1,0 +1,7 @@
+{
+  "name": "Voxelizer AI",
+  "description": "An AI-powered tool that transforms standard images into detailed voxel art scene blueprints and high-quality 3D-style visualizations.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
