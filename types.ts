@@ -7,6 +7,9 @@ export interface VoxelCluster {
   h: number;
   d: number;
   color: string;
+  roughness?: number;
+  metalness?: number;
+  emissive?: string;
 }
 
 export interface VoxelDesignResponse {

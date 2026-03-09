@@ -1,12 +1,15 @@
 import { VoxelDesignResponse } from './types';
 
-export const analyzeImageForVoxel = async (base64Image: string): Promise<VoxelDesignResponse> => {
+export const analyzeImageForVoxel = async (
+  base64Image: string,
+  mimeType: string,
+): Promise<VoxelDesignResponse> => {
   const response = await fetch('/api/voxelize', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ base64Image }),
+    body: JSON.stringify({ base64Image, mimeType }),
   });
 
   const payload = await response.json();

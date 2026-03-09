@@ -4,17 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voxelizer AI - Scene Designer</title>
+    <title>3D Voxelizer - Scene Designer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         .mono { font-family: 'Space Mono', monospace; }
+
+        /* ── Pixel logo corners ── */
         .pixel-corners {
             clip-path: polygon(
                 0 4px, 4px 4px, 4px 0,
@@ -23,25 +25,140 @@
                 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
             );
         }
+
+        /* ── Glassmorphism ── */
         .glass {
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .dark .glass {
-            background: rgba(15, 23, 42, 0.7);
+        .dark .glass { background: rgba(10, 18, 40, 0.72); }
+        .light .glass { background: rgba(255, 255, 255, 0.78); border-color: rgba(0,0,0,0.08); }
+
+        /* ── Subtle grid background ── */
+        .bg-grid {
+            background-image:
+                linear-gradient(rgba(16,185,129,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16,185,129,0.04) 1px, transparent 1px);
+            background-size: 44px 44px;
         }
-        .light .glass {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(0, 0, 0, 0.1);
+        .light .bg-grid {
+            background-image:
+                linear-gradient(rgba(16,185,129,0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16,185,129,0.07) 1px, transparent 1px);
         }
+
+        /* ── Logo float ── */
         @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-7px); }
         }
-        .animate-float {
-            animation: float 4s ease-in-out infinite;
+        .animate-float { animation: float 3.5s ease-in-out infinite; }
+
+        /* ═══════════════════════════════════════
+           UNIFIED BUTTON SYSTEM
+           Base: transform spring + shadow lift
+        ═══════════════════════════════════════ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition:
+                transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.18s ease,
+                background-color 0.15s ease,
+                border-color 0.15s ease,
+                color 0.15s ease;
         }
+        .btn:hover  { transform: translateY(-2px) scale(1.05); }
+        .btn:active { transform: translateY(1px) scale(0.97); transition-duration: 0.07s; }
+
+        /* Emerald glow — for primary/download */
+        .btn-glow:hover {
+            box-shadow: 0 0 18px rgba(16,185,129,0.35), 0 4px 14px rgba(0,0,0,0.18);
+        }
+
+        /* Icon wiggle — theme toggle, reset */
+        @keyframes wiggle {
+            0%,100% { transform: translateY(-2px) scale(1.05) rotate(0deg); }
+            28%     { transform: translateY(-2px) scale(1.05) rotate(-12deg); }
+            72%     { transform: translateY(-2px) scale(1.05) rotate(12deg); }
+        }
+        .btn-wiggle:hover { animation: wiggle 0.38s ease-in-out forwards; }
+        .btn-wiggle:active { animation: none; }
+
+        /* SVG spin — auto-rotate toggle */
+        .btn-spin:hover svg {
+            transition: transform 0.45s cubic-bezier(0.34,1.2,0.64,1);
+            transform: rotate(180deg);
+        }
+        .btn-spin svg { transition: transform 0.3s ease; }
+
+        /* Pulsing ring — active state (auto-rotate on) */
+        @keyframes ring-pulse {
+            0%,100% { box-shadow: 0 0 0 0   rgba(16,185,129,0.55); }
+            50%     { box-shadow: 0 0 0 5px rgba(16,185,129,0); }
+        }
+        .ring-pulse { animation: ring-pulse 2s ease-in-out infinite; }
+
+        /* ── Processing wave dots ── */
+        @keyframes dot-wave {
+            0%, 60%, 100% { transform: translateY(0);    opacity: 1; }
+            30%            { transform: translateY(-11px); opacity: 0.85; }
+        }
+
+        /* ── Shimmer text (loading label) ── */
+        @keyframes shimmer-slide {
+            0%   { background-position: -220% center; }
+            100% { background-position: 220% center; }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #6ee7b7 0%, #10b981 40%, #34d399 60%, #10b981 80%, #6ee7b7 100%);
+            background-size: 220% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer-slide 2.4s linear infinite;
+        }
+
+        /* ── Upload card drag state border pulse ── */
+        @keyframes border-pulse {
+            0%,100% { border-color: rgba(16,185,129,0.5); }
+            50%     { border-color: rgba(16,185,129,1); }
+        }
+        .drag-active { animation: border-pulse 1s ease-in-out infinite; }
+
+        /* ── Palette swatch tooltip (slide-up fade) ── */
+        .swatch-tip {
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity 0.14s ease, transform 0.14s ease;
+            pointer-events: none;
+        }
+        .swatch-wrap:hover .swatch-tip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Tooltip caret */
+        .swatch-tip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid transparent;
+        }
+        .dark .swatch-tip::after  { border-top-color: #0f172a; }
+        .light .swatch-tip::after { border-top-color: #fff; }
+
+        /* ── Keyframe: image preview subtle bob ── */
+        @keyframes bob {
+            0%,100% { transform: rotate(2deg) translateY(0); }
+            50%      { transform: rotate(2deg) translateY(-4px); }
+        }
+        .img-bob { animation: bob 4s ease-in-out infinite; }
     </style>
 <script type="importmap">
 {

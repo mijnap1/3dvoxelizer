@@ -1,7 +1,7 @@
 <div align="center">
 </div>
 
-# Voxelizer.AI
+# 3D Voxelizer
 
 Turn any image into an interactive 3D voxel diorama and export it as a `.glb` model.
 
@@ -44,12 +44,12 @@ Setup:
    `npm install`
 2. Create `.env.local` from `.env.example`:
    `GEMINI_API_KEY=your_gemini_api_key_here`
-3. Run secure local dev (frontend + serverless API):
-   `npm run dev:secure`
+3. Run local dev:
+   `npm run dev`
 
 Notes:
-- `npm run dev` starts Vite only (no `/api/voxelize` route).
-- `npm run dev:secure` uses `vercel dev` so API routes work locally.
+- `npm run dev` now serves frontend + local `/api/voxelize` in Vite.
+- `npm run dev:secure` still works via `vercel dev` if you want to mirror Vercel runtime.
 
 ## Deployment (GitHub + Vercel)
 
@@ -65,7 +65,7 @@ Notes:
 
 ## NPM Scripts
 
-- `npm run dev` start Vite dev server
+- `npm run dev` start Vite dev server with local API middleware
 - `npm run dev:secure` run Vite + Vercel API routes locally
 - `npm run build` build production frontend bundle
 - `npm run preview` preview production frontend build
